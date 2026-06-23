@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cat Servant Simulator - Local Showcase</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header" id="top">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="#top">Cat Servant Simulator</a>
+        <div class="nav-links">
+          <a href="#game">Game</a>
+          <a href="#designs">Designs</a>
+          <a href="#world">Game World</a>
+          <a href="#development">Development</a>
+        </div>
+      </nav>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Local project showcase</p>
+          <h1>Cat Servant Simulator</h1>
+          <p class="hero-text">
+            A small care game about reading a cat's boundaries, earning trust, and learning that
+            service is less about control than attention.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#playable">Try the browser sketch</a>
+            <a class="button secondary" href="../Assets/Scenes/SampleScene.unity">View Unity scene</a>
+          </div>
+        </div>
+        <div class="hero-stage" aria-label="Cat mood preview">
+          <img class="hero-bg" src="../Assets/Resources/result_screens/opening.jpg" alt="" />
+          <img class="hero-cat" src="../Assets/sprites/grey%20white%20cat.png" alt="Grey white cat" />
+          <div class="status-strip">
+            <span>Hand</span>
+            <span>Brush</span>
+            <span>Observe</span>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="section" id="game">
+        <div class="section-title">
+          <p class="eyebrow">01 / Game</p>
+          <h2>Inspiration, Concepts, and Playable Experience</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="panel wide">
+            <h3>Inspiration</h3>
+            <p>
+              The project turns ordinary cat-care behavior into a readable interaction system:
+              touch first, observe the response, then decide whether to groom, stop, or adjust.
+              The fantasy is not owning a pet. It is becoming a better servant to a creature with
+              strong opinions.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>Concept</h3>
+            <p>
+              A short, repeatable grooming session where each cat has different tolerance,
+              affection thresholds, and temporary conditions.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>Playable Game</h3>
+            <p>
+              The full game lives in Unity at <strong>Assets/Scenes/SampleScene.unity</strong>.
+              This website also includes a browser interaction sketch below.
+            </p>
+          </article>
+        </div>
+
+        <div class="playable" id="playable">
+          <div class="play-area">
+            <div class="meters" aria-label="Mood and anger meters">
+              <div class="meter">
+                <span>Mood</span>
+                <div class="track"><div class="fill mood-fill" id="moodFill"></div></div>
+                <strong id="moodValue">0</strong>
+              </div>
+              <div class="meter">
+                <span>Anger</span>
+                <div class="track"><div class="fill anger-fill" id="angerFill"></div></div>
+                <strong id="angerValue">0</strong>
+              </div>
+            </div>
+            <div class="cat-board">
+              <div class="cat-target">
+                <button class="hotspot head" data-part="head" aria-label="Touch head"></button>
+                <button class="hotspot back" data-part="back" aria-label="Touch back"></button>
+                <button class="hotspot belly" data-part="belly" aria-label="Touch belly and legs"></button>
+                <button class="hotspot tail" data-part="tail" aria-label="Touch tail"></button>
+                <img id="demoCat" src="../Assets/sprites/orange%20cat.png" alt="Orange cat in playable sketch" />
+              </div>
+            </div>
+          </div>
+          <div class="play-controls">
+            <div class="tool-toggle" role="group" aria-label="Choose tool">
+              <button class="tool active" data-tool="hand">
+                <img src="../Assets/cursors/hand_cursor.png" alt="" /> Hand
+              </button>
+              <button class="tool" data-tool="brush">
+                <img src="../Assets/cursors/brush_cursor.png" alt="" /> Brush
+              </button>
+            </div>
+            <p class="reaction" id="reactionText">Use the hand to learn what this cat likes.</p>
+            <button class="button primary reset" id="resetDemo">Restart sketch</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section muted" id="designs">
+        <div class="section-title">
+          <p class="eyebrow">02 / Designs</p>
+          <h2>Life Experience, Core Emotion, Core Mechanics, and Graph</h2>
+        </div>
+        <div class="design-layout">
+          <article class="panel">
+            <h3>Life Experience</h3>
+            <p>
+              Grooming a cat is familiar but unstable: the same gesture can be welcome, tolerated,
+              or rejected depending on timing and place. The design uses that everyday uncertainty
+              as the main play texture.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>Core Emotion</h3>
+            <p>
+              Tender anxiety. The player wants to help, but the cat's body language and meters
+              keep reminding them that care has limits.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>Core Mechanics</h3>
+            <ul class="compact-list">
+              <li>Switch between hand and brush.</li>
+              <li>Touch body areas with different hidden reactions.</li>
+              <li>Raise satisfaction without filling anger.</li>
+              <li>Read expressions: normal, satisfied, angry, hiss, and sleep.</li>
+              <li>Handle conditions: impatient, relaxed, sleepy.</li>
+            </ul>
+          </article>
+          <article class="panel graph-panel">
+            <h3>Mechanics Graph</h3>
+            <div class="graph" aria-label="Mechanics graph">
+              <div class="node">Observe</div>
+              <div class="arrow">-></div>
+              <div class="node">Choose Tool</div>
+              <div class="arrow">-></div>
+              <div class="node">Touch Part</div>
+              <div class="arrow">-></div>
+              <div class="node split">Mood + / Anger +</div>
+              <div class="arrow">-></div>
+              <div class="node">Expression</div>
+              <div class="arrow">-></div>
+              <div class="node split">Success / Fail</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="world">
+        <div class="section-title">
+          <p class="eyebrow">03 / Game World</p>
+          <h2>Visual-Audio, Space, Cultural Layers, and Narrative Design</h2>
+        </div>
+        <div class="world-grid">
+          <article class="image-panel">
+            <img src="../Assets/Resources/result_screens/congrats.jpg" alt="Congratulation result screen" />
+            <div>
+              <h3>Visual-Audio Design</h3>
+              <p>
+                The world uses soft illustrated cats, expressive face states, handmade UI bars,
+                cursor tools, result screens, and a small button-click sound to frame care as tactile.
+              </p>
+            </div>
+          </article>
+          <article class="image-panel">
+            <img src="../Assets/sprites/grey%20white%20cat%20satisfying.png" alt="Satisfied grey white cat" />
+            <div>
+              <h3>Space Design</h3>
+              <p>
+                The play space is intimate and low-pressure: one cat, a few body zones, visible
+                status feedback, and no spatial maze between the player and the animal.
+              </p>
+            </div>
+          </article>
+          <article class="image-panel">
+            <img src="../Assets/sprites/orange%20cat%20haqi.png" alt="Orange cat hissing" />
+            <div>
+              <h3>Cultural Layers</h3>
+              <p>
+                The title positions the player as a servant, drawing on a shared internet-cultural
+                joke that cats rule the household while humans negotiate for permission to help.
+              </p>
+            </div>
+          </article>
+          <article class="image-panel">
+            <img src="../Assets/Resources/result_screens/fail.jpg" alt="Failure result screen" />
+            <div>
+              <h3>Narrative Design</h3>
+              <p>
+                Story is delivered through micro-reactions rather than dialogue: trust rises,
+                patience thins, a cat hisses, or a sleepy cat accepts care and drifts off.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section muted" id="development">
+        <div class="section-title">
+          <p class="eyebrow">04 / Development</p>
+          <h2>Selected Highlights from the Agent-Development-Log</h2>
+        </div>
+        <div class="timeline">
+          <article>
+            <span>01</span>
+            <h3>Interaction model</h3>
+            <p>
+              Built a CatPart reaction structure so each body area can define separate hand and
+              brush effects for satisfaction, anger, and feedback text.
+            </p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Cat profile system</h3>
+            <p>
+              Added grey-white and orange cat profiles with independent pass ranges, anger limits,
+              and expression sprite sets.
+            </p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Emotion feedback</h3>
+            <p>
+              Connected mood and anger changes to visual states including slightly angry,
+              satisfying, hiss, and sleep.
+            </p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Condition layer</h3>
+            <p>
+              Introduced impatient, relaxed, and sleepy conditions to create variation between
+              grooming sessions without changing the basic controls.
+            </p>
+          </article>
+          <article>
+            <span>05</span>
+            <h3>Presentation pass</h3>
+            <p>
+              Added art bars, condition icons, cursor tools, result screens, opening fade, and
+              button audio for a complete playable loop.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Local website generated for the CatServantSimulator Unity project.</p>
+      <a href="#top">Back to top</a>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
