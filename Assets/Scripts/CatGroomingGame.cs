@@ -115,6 +115,11 @@ public class CatGroomingGame : MonoBehaviour
     [Header("Audio")]
     public AudioClip buttonClickSound;
     public float buttonClickVolume = 0.8f;
+    public AudioClip failSound;
+    public float resultSoundVolume = 0.85f;
+    public AudioClip backgroundMusic;
+    public float backgroundMusicVolume = 0.45f;
+    public float backgroundMusicFadeDuration = 2f;
 
     [Header("Auto UI")]
     public bool createUIOnStart = true;
@@ -153,6 +158,8 @@ public class CatGroomingGame : MonoBehaviour
     private int currentCatProfileIndex = -1;
     private CatExpression latestExpression = CatExpression.Normal;
     private AudioSource sfxAudioSource;
+    private AudioSource musicAudioSource;
+    private Coroutine backgroundMusicRoutine;
 
     private void Start()
     {
@@ -162,6 +169,7 @@ public class CatGroomingGame : MonoBehaviour
         }
 
         SetupAudio();
+        StartBackgroundMusic();
         SetupCatSpriteRenderer();
         gamesStarted = 1;
         SelectRandomCatProfile();
@@ -1039,6 +1047,16 @@ public class CatGroomingGame : MonoBehaviour
             buttonClickSound = Resources.Load<AudioClip>("audio/button_click");
         }
 
+        if (backgroundMusic == null)
+        {
+            backgroundMusic = Resources.Load<AudioClip>("audio/background_music");
+        }
+
+        if (failSound == null)
+        {
+            failSound = Resources.Load<AudioClip>("audio/fail_sound");
+        }
+
         if (sfxAudioSource == null)
         {
             sfxAudioSource = GetComponent<AudioSource>();
@@ -1050,6 +1068,15 @@ public class CatGroomingGame : MonoBehaviour
         }
 
         sfxAudioSource.playOnAwake = false;
+
+        if (musicAudioSource == null)
+        {
+            musicAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        musicAudioSource.playOnAwake = false;
+        musicAudioSource.loop = false;
+        musicAudioSource.volume = backgroundMusicVolume;
     }
 
     private void PlayButtonClickSound()
@@ -1059,6 +1086,64 @@ public class CatGroomingGame : MonoBehaviour
         if (sfxAudioSource != null && buttonClickSound != null)
         {
             sfxAudioSource.PlayOneShot(buttonClickSound, buttonClickVolume);
+        }
+    }
+
+    private void PlayFailSound()
+    {
+        SetupAudio();
+
+        if (sfxAudioSource != null && failSound != null)
+        {
+            sfxAudioSource.PlayOneShot(failSound, resultSoundVolume);
+        }
+    }
+
+    private void StartBackgroundMusic()
+    {
+        SetupAudio();
+
+        if (backgroundMusicRoutine != null)
+        {
+            StopCoroutine(backgroundMusicRoutine);
+        }
+
+        if (musicAudioSource == null || backgroundMusic == null)
+        {
+            return;
+        }
+
+        backgroundMusicRoutine = StartCoroutine(BackgroundMusicRoutine());
+    }
+
+    private IEnumerator BackgroundMusicRoutine()
+    {
+        while (backgroundMusic != null && musicAudioSource != null)
+        {
+            musicAudioSource.clip = backgroundMusic;
+            musicAudioSource.volume = backgroundMusicVolume;
+            musicAudioSource.time = 0f;
+            musicAudioSource.Play();
+
+            float fadeDuration = Mathf.Clamp(backgroundMusicFadeDuration, 0f, backgroundMusic.length);
+            float playDuration = Mathf.Max(0f, backgroundMusic.length - fadeDuration);
+
+            yield return new WaitForSeconds(playDuration);
+
+            float elapsed = 0f;
+
+            while (elapsed < fadeDuration && musicAudioSource != null)
+            {
+                elapsed += Time.deltaTime;
+                float progress = fadeDuration <= 0f ? 1f : elapsed / fadeDuration;
+                musicAudioSource.volume = Mathf.Lerp(backgroundMusicVolume, 0f, progress);
+                yield return null;
+            }
+
+            if (musicAudioSource != null)
+            {
+                musicAudioSource.Stop();
+            }
         }
     }
 
@@ -1089,6 +1174,11 @@ public class CatGroomingGame : MonoBehaviour
             resultScreenImage.sprite = CreateSprite(texture);
             ConfigureResultScreenImage(resultScreenImage, texture);
             resultScreenImage.enabled = true;
+        }
+
+        if (!success)
+        {
+            PlayFailSound();
         }
 
         SetResult("");
